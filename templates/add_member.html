@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>{% if edit_mode %}Edit Club Member{% else %}Add New Club Member{% endif %}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 row align-items-center">
+                                <div class="col-4 col-md-3">
+                                    <label for="title" class="form-label mb-0">
+                                        <i class="fas fa-user me-1"></i>Title *
+                                    </label>
+                                    <select class="form-select" id="title" name="title" required>
+                                        <option value="Mr." {% if member and member.title == 'Mr.' %}selected{% endif %}>Mr.</option>
+                                        <option value="Mrs." {% if member and member.title == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                                    </select>
+                                </div>
+                                <div class="col-8 col-md-9">
+                                    <label for="name" class="form-label mb-0">
+                                        <i class="fas fa-user me-1"></i>Full Name *
+                                    </label>
+                                    <input type="text" class="form-control" id="name" name="name" required value="{% if member %}{{ member.name }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="relationship_status" class="form-label">
+                                <i class="fas fa-user-friends me-1"></i>Relationship Status *
+                            </label>
+                            <select class="form-select" id="relationship_status" name="relationship_status" required>
+                                <option value="Single" {% if member and member.relationship_status == 'Single' %}selected{% endif %}>Single</option>
+                                <option value="Married" {% if member and member.relationship_status == 'Married' %}selected{% endif %}>Married</option>
+                                <option value="Not to disclose" {% if member and member.relationship_status == 'Not to disclose' %}selected{% endif %}>Not to disclose</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone me-1"></i>Phone Number *
+                                </label>
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                       placeholder="+1234567890" required value="{% if member %}{{ member.phone }}{% endif %}">
+                                <div class="form-text">Include country code (e.g., +91 for India)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="birthday" class="form-label">
+                                    <i class="fas fa-birthday-cake me-1"></i>Birthday *
+                                </label>
+                                <input type="text" class="form-control" id="birthday" name="birthday" 
+                                       placeholder="DD-MM" pattern="[0-9]{2}-[0-9]{2}" required value="{% if member %}{{ member.birthday }}{% endif %}">
+                                <div class="form-text">Format: DD-MM (e.g., 15-03 for 15 March)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="wedding_anniversary" class="form-label">
+                                    <i class="fas fa-heart me-1"></i>Wedding Anniversary
+                                </label>
+                                <input type="text" class="form-control" id="wedding_anniversary" 
+                                       name="wedding_anniversary" placeholder="DD-MM" pattern="[0-9]{2}-[0-9]{2}" value="{% if member %}{{ member.wedding_anniversary }}{% endif %}">
+                                <div class="form-text">Format: DD-MM (optional)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="spouse_name" class="form-label">
+                                    <i class="fas fa-ring me-1"></i>Spouse Name
+                                </label>
+                                <input type="text" class="form-control" id="spouse_name" name="spouse_name" value="{% if member %}{{ member.spouse_name }}{% endif %}">
+                                <div class="form-text">Optional. If Married and left blank, will auto-fill as opposite title + your name.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Email Address
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" value="{% if member %}{{ member.email }}{% endif %}">
+                                <div class="form-text">Optional</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('members_list') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Members
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>{% if edit_mode %}Update Member{% else %}Add Member{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Information Card -->
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Important Information
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- WhatsApp info removed as per requirements -->
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-calendar text-primary me-1"></i>Date Format</h6>
+                        <ul class="small">
+                            <li>Use DD-MM format (day-month)</li>
+                            <li>Example: 15-03 for 15th March</li>
+                            <li>This ensures proper date matching</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add some client-side validation
+document.getElementById('phone').addEventListener('input', function(e) {
+    let value = e.target.value;
+    if (!value.startsWith('+')) {
+        e.target.setCustomValidity('Phone number must start with country code (+)');
+    } else {
+        e.target.setCustomValidity('');
+    }
+});
+
+// Format date inputs
+document.getElementById('birthday').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '-' + value.substring(2, 4);
+    }
+    e.target.value = value;
+});
+
+document.getElementById('wedding_anniversary').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 2) {
+        value = value.substring(0, 2) + '-' + value.substring(2, 4);
+    }
+    e.target.value = value;
+});
+
+// Auto-fill spouse name if Married and left blank
+document.getElementById('relationship_status').addEventListener('change', function() {
+    const rel = this.value;
+    const spouseInput = document.getElementById('spouse_name');
+    if (rel === 'Married') {
+        spouseInput.placeholder = 'Will auto-fill if left blank';
+    } else {
+        spouseInput.placeholder = '';
+    }
+});
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    const rel = document.getElementById('relationship_status').value;
+    const spouseInput = document.getElementById('spouse_name');
+    const title = document.getElementById('title').value;
+    const name = document.getElementById('name').value;
+    if (rel === 'Married' && !spouseInput.value.trim()) {
+        if (title === 'Mr.') {
+            spouseInput.value = 'Mrs. ' + name;
+        } else if (title === 'Mrs.') {
+            spouseInput.value = 'Mr. ' + name;
+        }
+    }
+});
+</script>
+{% endblock %}

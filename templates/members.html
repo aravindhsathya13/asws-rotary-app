@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-users me-2"></i>Club Members
+            </h1>
+            <a href="{{ url_for('add_member') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Add New Member
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>All Members 
+                    <span class="badge bg-primary ms-2">{{ members|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if members %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><i class="fas fa-user me-1"></i>Title</th>
+                                <th><i class="fas fa-user me-1"></i>Name</th>
+                                <th><i class="fas fa-phone me-1"></i>Phone</th>
+                                <th><i class="fas fa-birthday-cake me-1"></i>Birthday</th>
+                                <th><i class="fas fa-heart me-1"></i>Anniversary</th>
+                                <th><i class="fas fa-ring me-1"></i>Spouse</th>
+                                <th><i class="fas fa-envelope me-1"></i>Email</th>
+                                <th class="text-dark"><i class="fas fa-edit me-1"></i>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                            <tr>
+                                <td>{{ member.title }}</td>
+                                <td><strong>{{ member.name }}</strong></td>
+                                <td>
+                                    <span class="badge bg-success">{{ member.phone }}</span>
+                                </td>
+                                <td>
+                                    {% if member.birthday %}
+                                        <i class="fas fa-birthday-cake text-success me-1"></i>
+                                        {% set bday = member.birthday.split('-') %}
+                                        {% if bday|length == 2 %}
+                                            {{ bday[0] }}-{{ bday[1] }}
+                                        {% elif bday|length == 3 %}
+                                            {{ bday[2] }}-{{ bday[1] }}
+                                        {% else %}
+                                            {{ member.birthday }}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if member.wedding_anniversary %}
+                                        <i class="fas fa-heart text-danger me-1"></i>
+                                        {% set anniv = member.wedding_anniversary.split('-') %}
+                                        {% if anniv|length == 2 %}
+                                            {{ anniv[0] }}-{{ anniv[1] }}
+                                        {% elif anniv|length == 3 %}
+                                            {{ anniv[2] }}-{{ anniv[1] }}
+                                        {% else %}
+                                            {{ member.wedding_anniversary }}
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if member.spouse_name %}
+                                        {{ member.spouse_name }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if member.email %}
+                                        {{ member.email }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('edit_member', member_id=member.id) }}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No members found</h5>
+                    <p class="text-muted">Start by adding your first club member.</p>
+                    <a href="{{ url_for('add_member') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>Add First Member
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if members %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Quick Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <h4 class="text-primary">{{ members|length }}</h4>
+                            <small class="text-muted">Total Members</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <h4 class="text-success">{{ members|selectattr('birthday')|list|length }}</h4>
+                            <small class="text-muted">Birthdays Registered</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <h4 class="text-danger">{{ members|selectattr('wedding_anniversary')|list|length }}</h4>
+                            <small class="text-muted">Anniversaries Registered</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <h4 class="text-info">{{ members|selectattr('email')|list|length }}</h4>
+                            <small class="text-muted">Email Addresses</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">
+                <i class="fas fa-chart-line me-2"></i>Anniversary Dashboard
+            </h1>
+            <!-- Send Today's Wishes button removed: notifications are disabled -->
+        </div>
+    </div>
+</div>
+
+
+<!-- Today's Events -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card birthday-card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-birthday-cake me-2"></i>Today's Birthdays
+                    <span class="badge bg-light text-dark ms-2">{{ today_events.birthdays|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if today_events.birthdays %}
+                    {% for member in today_events.birthdays %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-icon text-success me-3">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">{{ member.name }}</h6>
+                            <small class="text-muted">{{ member.phone }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No birthdays today
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card anniversary-card h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-heart me-2"></i>Today's Anniversaries
+                    <span class="badge bg-light text-dark ms-2">{{ today_events.anniversaries|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if today_events.anniversaries %}
+                    {% for member in today_events.anniversaries %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-icon text-danger me-3">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">
+                                {{ member.name }}
+                                {% if member.spouse_name %} & {{ member.spouse_name }}{% endif %}
+                            </h6>
+                            <small class="text-muted">{{ member.phone }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No anniversaries today
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Current Month Events -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card border-info h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>Birthdays in {{ month_events.month }}
+                    <span class="badge bg-light text-dark ms-2">{{ month_events.birthdays|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if month_events.birthdays %}
+                    {% for b in month_events.birthdays %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon text-info me-3">
+                                <i class="fas fa-birthday-cake"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">{{ b.member.name }}</h6>
+                                <small class="text-muted">{{ b.member.phone }}</small>
+                            </div>
+                        </div>
+                        <div class="event-date">
+                            {{ b.date.strftime('%b %d') }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No birthdays this month
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-info h-100">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar-heart me-2"></i>Anniversaries in {{ month_events.month }}
+                    <span class="badge bg-light text-dark ms-2">{{ month_events.anniversaries|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if month_events.anniversaries %}
+                    {% for a in month_events.anniversaries %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon text-info me-3">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">
+                                    {{ a.member.name }}{% if a.member.spouse_name %} & {{ a.member.spouse_name }}{% endif %}
+                                </h6>
+                                <small class="text-muted">{{ a.member.phone }}</small>
+                            </div>
+                        </div>
+                        <div class="event-date">
+                            {{ a.date.strftime('%b %d') }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No anniversaries this month
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upcoming Events -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card upcoming-card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar-alt me-2"></i>Upcoming Birthdays (7 days)
+                    <span class="badge bg-light text-dark ms-2">{{ upcoming_events.birthdays|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_events.birthdays %}
+                    {% for event in upcoming_events.birthdays %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon text-warning me-3">
+                                <i class="fas fa-birthday-cake"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">{{ event.member.name }}</h6>
+                                <small class="text-muted">{{ event.member.phone }}</small>
+                            </div>
+                        </div>
+                        <div class="event-date">
+                            {{ event.date.strftime('%b %d') }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No upcoming birthdays
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card upcoming-card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar-heart me-2"></i>Upcoming Anniversaries (7 days)
+                    <span class="badge bg-light text-dark ms-2">{{ upcoming_events.anniversaries|length }}</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if upcoming_events.anniversaries %}
+                    {% for event in upcoming_events.anniversaries %}
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon text-warning me-3">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">
+                                    {{ event.member.name }}
+                                    {% if event.member.spouse_name %} & {{ event.member.spouse_name }}{% endif %}
+                                </h6>
+                                <small class="text-muted">{{ event.member.phone }}</small>
+                            </div>
+                        </div>
+                        <div class="event-date">
+                            {{ event.date.strftime('%b %d') }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-info-circle me-2"></i>No upcoming anniversaries
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Status -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>System Status
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row justify-content-center text-center">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                            <h6>Automated Scheduling</h6>
+                            <small class="text-muted">Daily wishes at 9:00 AM<br>Reminders at 6:00 PM</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <i class="fas fa-database fa-2x text-info mb-2"></i>
+                            <h6>Member Database</h6>
+                            <small class="text-muted">SQLite database with member info</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
