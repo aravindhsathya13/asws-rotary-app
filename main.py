@@ -1,5 +1,3 @@
-
-
 # --- SSL Verification Workaround for Local Debug ---
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -30,7 +28,7 @@ import requests
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import threading
 from models import Member
-from db import DatabaseManager
+from supabase_db import HybridDatabaseManager
 from anniversary import AnniversaryManager
 
 # Load environment variables
@@ -53,6 +51,57 @@ def init_anniversary_manager():
     """Initialize the anniversary manager"""
     global anniversary_manager
     anniversary_manager = AnniversaryManager()
+
+# PWA and mobile-specific routes
+@app.route('/manifest.json')
+def manifest():
+    """Serve PWA manifest"""
+    return app.send_static_file('manifest.json')
+
+@app.route('/sw.js')
+def service_worker():
+    """Serve service worker"""
+    response = app.send_static_file('sw.js')
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
+
+@app.route('/api/members')
+def api_members():
+    """API endpoint for members (useful for mobile apps)"""
+    if not anniversary_manager:
+        init_anniversary_manager()
+    
+    members = anniversary_manager.db.get_all_members()
+    return jsonify([{
+        'id': member.id,
+        'title': member.title,
+        'name': member.name,
+        'phone': member.phone,
+        'birthday': member.birthday,
+        'wedding_anniversary': member.wedding_anniversary,
+        'spouse_name': member.spouse_name,
+        'email': member.email
+    } for member in members])
+
+@app.route('/api/today')
+def api_today():
+    """API endpoint for today's events"""
+    if not anniversary_manager:
+        init_anniversary_manager()
+    
+    today_events = anniversary_manager.get_today_events()
+    return jsonify({
+        'birthdays': [{
+            'name': member.name,
+            'phone': member.phone,
+            'spouse_name': member.spouse_name
+        } for member in today_events['birthdays']],
+        'anniversaries': [{
+            'name': member.name,
+            'phone': member.phone,
+            'spouse_name': member.spouse_name
+        } for member in today_events['anniversaries']]
+    })
 
 @app.route('/')
 def dashboard():

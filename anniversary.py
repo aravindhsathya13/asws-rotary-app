@@ -2,12 +2,12 @@
 anniversary.py: Anniversary event logic for Rotary Club Anniversary Management System
 """
 import datetime
-from db import DatabaseManager
+from supabase_db import HybridDatabaseManager
 from models import Member
 
 class AnniversaryManager:
     def __init__(self):
-        self.db = DatabaseManager()
+        self.db = HybridDatabaseManager()
 
     def get_month_events(self) -> dict:
         today = datetime.date.today()

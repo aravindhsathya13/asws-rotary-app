@@ -1,0 +1,9 @@
+<!-- This is a placeholder for the apple-touch-icon.png -->
+<!-- You should replace this with actual PNG icons of the specified sizes -->
+<!-- For now, I'll create a simple SVG that can be converted to PNG -->
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+    <rect width="180" height="180" fill="#0d6efd" rx="20"/>
+    <text x="90" y="90" text-anchor="middle" dy="0.35em" fill="white" font-size="60" font-family="Arial, sans-serif">R</text>
+    <circle cx="90" cy="120" r="15" fill="#ffc107"/>
+    <text x="90" y="155" text-anchor="middle" fill="white" font-size="12" font-family="Arial, sans-serif">Club</text>
+</svg>
